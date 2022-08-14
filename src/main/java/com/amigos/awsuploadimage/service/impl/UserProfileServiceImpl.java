@@ -1,5 +1,6 @@
 package com.amigos.awsuploadimage.service.impl;
 
+import com.amigos.awsuploadimage.exceptions.DuplicateRecordException;
 import com.amigos.awsuploadimage.profile.UserProfile;
 import com.amigos.awsuploadimage.repository.UserProfileRepository;
 import com.amigos.awsuploadimage.request.UserProfileRequest;
@@ -24,12 +25,22 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public UserProfile createNewUserProfile(UserProfileRequest request) {
+        //check duplicate user's name is existed
+        checkUserNameIsExisted(request.getUsername());
+
         UserProfile userProfile = new UserProfile();
         userProfile.setUsername(request.getUsername());
         userProfile.setUserProfileImageLink(request.getLinkImage());
         userProfile.setAge(request.getAge());
         userProfileRepository.save(userProfile);
         return userProfile;
+    }
+
+    private void checkUserNameIsExisted(String name) {
+        Boolean isExisted = userProfileRepository.existsUserProfileByUsernameIgnoreCase(name.trim());
+        if(isExisted){
+            throw new DuplicateRecordException("There is an existing user name associated to this organisation");
+        }
     }
 
     @Override

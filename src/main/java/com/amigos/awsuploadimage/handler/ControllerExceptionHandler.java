@@ -1,6 +1,8 @@
 package com.amigos.awsuploadimage.handler;
 
+import com.amigos.awsuploadimage.exceptions.DuplicateRecordException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,5 +24,10 @@ public class ControllerExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+    }
+
+    @ExceptionHandler(DuplicateRecordException.class)
+    public ResponseEntity<String> handleDuplicateRecordException(DuplicateRecordException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
