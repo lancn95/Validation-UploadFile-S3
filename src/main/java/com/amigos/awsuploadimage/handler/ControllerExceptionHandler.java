@@ -1,6 +1,7 @@
 package com.amigos.awsuploadimage.handler;
 
 import com.amigos.awsuploadimage.exceptions.DuplicateRecordException;
+import com.amigos.awsuploadimage.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,5 +30,10 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(DuplicateRecordException.class)
     public ResponseEntity<String> handleDuplicateRecordException(DuplicateRecordException ex){
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

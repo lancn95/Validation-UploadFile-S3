@@ -1,7 +1,8 @@
 package com.amigos.awsuploadimage.api;
 
 import com.amigos.awsuploadimage.profile.UserProfile;
-import com.amigos.awsuploadimage.request.UserProfileRequest;
+import com.amigos.awsuploadimage.request.UserProfileCreateRequest;
+import com.amigos.awsuploadimage.request.UserProfileUpdateRequest;
 import com.amigos.awsuploadimage.service.UserProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/user-profile")
+@CrossOrigin("*")
 public class UserProfileApi {
 
     private final UserProfileService userProfileService;
@@ -30,7 +32,7 @@ public class UserProfileApi {
     }
 
     @PostMapping()
-    public ResponseEntity<UserProfile> createNewUserProfile(@RequestBody @Valid UserProfileRequest userProfileRequest,
+    public ResponseEntity<UserProfile> createNewUserProfile(@RequestBody @Valid UserProfileCreateRequest userProfileRequest,
                                                             BindingResult bindingResult)
             throws MethodArgumentNotValidException {
         if (bindingResult.hasErrors()) {
@@ -46,5 +48,12 @@ public class UserProfileApi {
     public void uploadUserProfileImage(@PathVariable("userProfileId") Long id,
                                        @RequestParam("file") MultipartFile file) {
         userProfileService.uploadUserProfileImage(id, file);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserProfile> update(@PathVariable("id") Long id,
+                                              @RequestBody @Valid UserProfileUpdateRequest request){
+        userProfileService.update(id, request);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

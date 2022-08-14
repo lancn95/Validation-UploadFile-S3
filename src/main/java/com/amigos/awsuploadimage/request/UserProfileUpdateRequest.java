@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class UserProfileRequest {
+public class UserProfileUpdateRequest {
     @NotNull
     @Size(min = 3, max = 100, message = "Độ dài của tên từ 3 đến 100 ký tự")
     private String username;
