@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<aws-java-sdkt-version>1.11.133</aws-java-sdkt-version>
+		<swagger-version>1.6.4</swagger-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -51,6 +52,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${swagger-version}</version>
 		</dependency>
 	</dependencies>
 
