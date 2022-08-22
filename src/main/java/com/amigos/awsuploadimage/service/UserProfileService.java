@@ -1,6 +1,6 @@
 package com.amigos.awsuploadimage.service;
 
-import com.amigos.awsuploadimage.profile.UserProfile;
+import com.amigos.awsuploadimage.entity.UserProfile;
 import com.amigos.awsuploadimage.request.UserProfileCreateRequest;
 import com.amigos.awsuploadimage.request.UserProfileUpdateRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,4 +16,6 @@ public interface UserProfileService {
     void uploadUserProfileImage(Long userId, MultipartFile file);
 
     void update(Long id, UserProfileUpdateRequest request);
+
+    void uploadUserFile(Long id, MultipartFile[] file);
 }

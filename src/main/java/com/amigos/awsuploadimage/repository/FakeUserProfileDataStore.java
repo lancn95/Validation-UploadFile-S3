@@ -1,11 +1,10 @@
 package com.amigos.awsuploadimage.repository;
 
-import com.amigos.awsuploadimage.profile.UserProfile;
+import com.amigos.awsuploadimage.entity.UserProfile;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 public class FakeUserProfileDataStore {

@@ -1,6 +1,6 @@
 package com.amigos.awsuploadimage.repository;
 
-import com.amigos.awsuploadimage.profile.UserProfile;
+import com.amigos.awsuploadimage.entity.UserProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

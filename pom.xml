@@ -17,6 +17,7 @@
 		<java.version>1.8</java.version>
 		<aws-java-sdkt-version>1.11.133</aws-java-sdkt-version>
 		<swagger-version>1.6.4</swagger-version>
+		<postgresql-version>42.2.5</postgresql-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -28,11 +29,18 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+<!--		<dependency>-->
+<!--			<groupId>mysql</groupId>-->
+<!--			<artifactId>mysql-connector-java</artifactId>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql-version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

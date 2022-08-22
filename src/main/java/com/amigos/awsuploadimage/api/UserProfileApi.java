@@ -1,6 +1,6 @@
 package com.amigos.awsuploadimage.api;
 
-import com.amigos.awsuploadimage.profile.UserProfile;
+import com.amigos.awsuploadimage.entity.UserProfile;
 import com.amigos.awsuploadimage.request.UserProfileCreateRequest;
 import com.amigos.awsuploadimage.request.UserProfileUpdateRequest;
 import com.amigos.awsuploadimage.service.UserProfileService;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/user-profile")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 @Tag(name = "user-profile-well-define-APIs")
 public class UserProfileApi {
 
@@ -59,8 +59,18 @@ public class UserProfileApi {
     @PutMapping("/{id}")
     @Operation(summary = "update user profile ")
     public ResponseEntity<UserProfile> update(@PathVariable("id") Long id,
-                                              @RequestBody @Valid UserProfileUpdateRequest request){
+                                              @RequestBody @Valid UserProfileUpdateRequest request) {
         userProfileService.update(id, request);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "{userProfileId}/file/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "upload file attach user")
+    public ResponseEntity<?> uploadUserFile(@PathVariable("userProfileId") Long id,
+                                            @RequestParam("files") MultipartFile[] files) {
+        userProfileService.uploadUserFile(id, files);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
