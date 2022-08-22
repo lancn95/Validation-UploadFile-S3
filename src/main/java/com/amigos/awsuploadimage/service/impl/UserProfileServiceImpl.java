@@ -90,7 +90,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                 }
             }
         }
-        if(userProfile.getFileName().isEmpty()){
+        if(userProfile.getFileName() == null){
             userProfile.setFileName(file);
         }else{
             userProfile.setFileName(userProfile.getFileName() + "," + file);
