@@ -22,6 +22,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     public String store(MultipartFile file, String path) {
         String uploadFileName = file.getOriginalFilename();
         String savePath = filesPath + path;
+        System.out.println("*** " + savePath + " ***");
         File pathAsFile = new File(savePath);
         if(!Files.exists(Paths.get(savePath))){
             pathAsFile.mkdir();
