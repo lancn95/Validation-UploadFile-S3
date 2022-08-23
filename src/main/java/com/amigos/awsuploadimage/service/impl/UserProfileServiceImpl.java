@@ -161,10 +161,8 @@ public class UserProfileServiceImpl implements UserProfileService {
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Not found file with name : " + fileName)));
 
-        String tempFileName = "UserWithId" + userId + "/" + result;
-//        String strNew = tempFileName.replaceFirst("/app/", "");
-//        System.out.println(strNew);
-        File file = new File(tempFileName);
+
+        File file = new File(filesPath + "UserWithId" + userId + "/" + result);
 
         Path path = Paths.get(file.getAbsolutePath());
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
