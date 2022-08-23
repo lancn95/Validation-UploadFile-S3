@@ -6,6 +6,9 @@ import com.amigos.awsuploadimage.request.UserProfileUpdateRequest;
 import com.amigos.awsuploadimage.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -64,6 +73,7 @@ public class UserProfileApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // upload file in project
     @PostMapping(value = "{userProfileId}/file/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -72,5 +82,18 @@ public class UserProfileApi {
                                             @RequestParam("files") MultipartFile[] files) {
         userProfileService.uploadUserFile(id, files);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Value("${application.file.filesPath}")
+    private String filesPath;
+
+
+    // download file in project
+    @GetMapping(value = "file/download")
+    @Operation(summary = "download file attach user")
+    public ResponseEntity<?> downloadUserFile(@RequestParam("fileName") String fileName
+                                            , @RequestParam("id") Long id,
+                                             HttpServletResponse httpServletResponse) throws IOException {
+      return userProfileService.downloadUserFile(id, fileName, httpServletResponse);
     }
 }

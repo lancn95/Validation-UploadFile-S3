@@ -1,22 +1,36 @@
 package com.amigos.awsuploadimage.service.impl;
 
+import com.amigos.awsuploadimage.entity.UserProfile;
 import com.amigos.awsuploadimage.exceptions.DuplicateRecordException;
 import com.amigos.awsuploadimage.exceptions.ResourceNotFoundException;
-import com.amigos.awsuploadimage.entity.UserProfile;
 import com.amigos.awsuploadimage.repository.UserProfileRepository;
 import com.amigos.awsuploadimage.request.UserProfileCreateRequest;
 import com.amigos.awsuploadimage.request.UserProfileUpdateRequest;
 import com.amigos.awsuploadimage.service.FileUploadService;
 import com.amigos.awsuploadimage.service.UserProfileService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
+    @Value("${application.file.filesPath}")
+    private String filesPath;
+
     private final UserProfileRepository userProfileRepository;
     private final FileUploadService fileUploadService;
 
@@ -85,17 +99,37 @@ public class UserProfileServiceImpl implements UserProfileService {
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 String pathFile = storeFile(files[i], id);
-                if(!StringUtils.isBlank(pathFile)){
+                if (!StringUtils.isBlank(pathFile)) {
                     file = file + pathFile + ",";
                 }
             }
         }
-        if(userProfile.getFileName() == null){
+        if (userProfile.getFileName() == null) {
             userProfile.setFileName(file);
-        }else{
+        } else {
             userProfile.setFileName(userProfile.getFileName() + "," + file);
         }
         userProfileRepository.save(userProfile);
+    }
+
+    @Override
+    public ResponseEntity<?> downloadUserFile(Long userId, String fileName, HttpServletResponse httpServletResponse) throws IOException {
+        UserProfile user = checkUserIsExisted(userId);
+        String[] arrOfStr = user.getFileName().split(",");
+        String result = String.valueOf(Arrays.stream(arrOfStr)
+                .filter(x -> x.equals(fileName))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Not found file with name : " + fileName)));
+
+        File file = new File(filesPath + "UserWithId" + userId + "/" + result);
+        Path path = Paths.get(file.getAbsolutePath());
+        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+
+        return ResponseEntity.ok()
+                .headers(getHeader(file))
+                .contentLength(file.length())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
     }
 
     private String storeFile(MultipartFile file, Long id) {
@@ -104,5 +138,18 @@ public class UserProfileServiceImpl implements UserProfileService {
         return fileUploadService.store(file, path);
     }
 
+    private UserProfile checkUserIsExisted(Long userId) {
+        return userProfileRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user name", "id", String.valueOf(userId)));
+    }
+
+    private HttpHeaders getHeader(File file){
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
+        header.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        header.add("Pragma", "no-cache");
+        header.add("Expires", "0");
+        return header;
+    }
 
 }
