@@ -7,8 +7,6 @@ import com.amigos.awsuploadimage.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -83,10 +77,6 @@ public class UserProfileApi {
         userProfileService.uploadUserFile(id, files);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
-    @Value("${application.file.filesPath}")
-    private String filesPath;
-
 
     // download file in project
     @GetMapping(value = "file/download")
