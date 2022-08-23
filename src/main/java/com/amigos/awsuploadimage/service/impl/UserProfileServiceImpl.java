@@ -163,7 +163,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         String tempFileName = filesPath + "UserWithId" + userId + "/" + result;
         String strNew = tempFileName.replaceFirst("/app/", "");
         System.out.println(strNew);
-        File file = new File(filesPath + "UserWithId" + userId + "/" + result);
+        File file = new File(strNew);
 
         Path path = Paths.get(file.getAbsolutePath());
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
