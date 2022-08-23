@@ -11,4 +11,6 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long>,
 
     Boolean existsUserProfileByUsernameIgnoreCase(String username);
 
+    Boolean existsUserProfileByUserProfileIdAndFileNameIgnoreCase(Long id, String fileName);
+
 }

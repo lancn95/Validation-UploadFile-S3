@@ -23,8 +23,10 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
@@ -73,8 +75,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public void uploadUserProfileImage(Long userId, MultipartFile file) {
-        //1. Check if iamge is not empty
-        //2. If file is an iamge
+        //1. Check if image is not empty
+        //2. If file is an image
         //3. The user exists in our database
         //4. Grab some metadata from file if any
         //5. Store the image in s3 and update database with s3 image link
@@ -93,28 +95,50 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public void uploadUserFile(Long id, MultipartFile[] files) {
-        UserProfile userProfile = userProfileRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("user name", "id", String.valueOf(id)));
+        UserProfile userProfile = getUserById(id);
+        String[] userExistedFiles = userProfile.getFileName().split(",");
         String file = "";
+        Optional<String> result;
+        List<String> filesNameExisted = new ArrayList<>();
+        //check file name is existed
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
-                String pathFile = storeFile(files[i], id);
-                if (!StringUtils.isBlank(pathFile)) {
-                    file = file + pathFile + ",";
+                int finalI = i;
+                result = Arrays.stream(userExistedFiles)
+                        .filter(x -> x.equals(files[finalI].getOriginalFilename()))
+                        .findFirst();
+                if (result.isPresent()) {
+                    filesNameExisted.add(files[finalI].getOriginalFilename());
                 }
             }
         }
-        if (userProfile.getFileName() == null) {
-            userProfile.setFileName(file);
-        } else {
-            userProfile.setFileName(userProfile.getFileName() + "," + file);
+
+        // if there no file name is existed => save file
+        if (filesNameExisted.size() == 0) {
+            for (int i = 0; i < files.length; i++) {
+                    String pathFile = storeFile(files[i], id);
+                    if (!StringUtils.isBlank(pathFile)) {
+                        file = file + pathFile + ",";
+
+                }
+            }
+            if (userProfile.getFileName() == null) {
+                userProfile.setFileName(file);
+            } else {
+                userProfile.setFileName(userProfile.getFileName() + file);
+            }
+            userProfileRepository.save(userProfile);
+        }else{
+            // throw all file with name are existed
+            throw new DuplicateRecordException(filesNameExisted);
         }
-        userProfileRepository.save(userProfile);
+
+
     }
 
     @Override
     public ResponseEntity<?> downloadUserFile(Long userId, String fileName, HttpServletResponse httpServletResponse) throws IOException {
-        UserProfile user = checkUserIsExisted(userId);
+        UserProfile user = getUserById(userId);
         String[] arrOfStr = user.getFileName().split(",");
         String result = String.valueOf(Arrays.stream(arrOfStr)
                 .filter(x -> x.equals(fileName))
@@ -138,7 +162,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         return fileUploadService.store(file, path);
     }
 
-    private UserProfile checkUserIsExisted(Long userId) {
+    private UserProfile getUserById(Long userId) {
         return userProfileRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user name", "id", String.valueOf(userId)));
     }
