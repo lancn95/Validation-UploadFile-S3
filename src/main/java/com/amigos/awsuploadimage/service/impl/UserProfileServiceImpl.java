@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -160,10 +161,10 @@ public class UserProfileServiceImpl implements UserProfileService {
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Not found file with name : " + fileName)));
 
-        String tempFileName = filesPath + "UserWithId" + userId + "/" + result;
-        String strNew = tempFileName.replaceFirst("/app/", "");
-        System.out.println(strNew);
-        File file = new File(strNew);
+        String tempFileName = "UserWithId" + userId + "/" + result;
+//        String strNew = tempFileName.replaceFirst("/app/", "");
+//        System.out.println(strNew);
+        File file = new File(tempFileName);
 
         Path path = Paths.get(file.getAbsolutePath());
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
