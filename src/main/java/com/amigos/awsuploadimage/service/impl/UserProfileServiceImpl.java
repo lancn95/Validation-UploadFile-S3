@@ -96,11 +96,30 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public void uploadUserFile(Long id, MultipartFile[] files) {
         UserProfile userProfile = getUserById(id);
-        String[] userExistedFiles = userProfile.getFileName().split(",");
+        String[] userExistedFiles;
         String file = "";
+
+        if (userProfile.getFileName() != null) {
+            userExistedFiles = userProfile.getFileName().split(",");
+            List<String> filesNameExisted;
+            //check file name is existed
+            filesNameExisted = checkFileIsExisted(files, userExistedFiles);
+
+            // if there no file name is existed => save file
+            if (filesNameExisted.size() == 0) {
+                saveFile(files, userProfile, file);
+            } else {
+                // throw all file with name are existed
+                throw new DuplicateRecordException(filesNameExisted);
+            }
+        } else {
+            saveFile(files, userProfile, file);
+        }
+    }
+
+    private List<String> checkFileIsExisted(MultipartFile[] files, String[] userExistedFiles) {
         Optional<String> result;
         List<String> filesNameExisted = new ArrayList<>();
-        //check file name is existed
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 int finalI = i;
@@ -112,29 +131,25 @@ public class UserProfileServiceImpl implements UserProfileService {
                 }
             }
         }
-
-        // if there no file name is existed => save file
-        if (filesNameExisted.size() == 0) {
-            for (int i = 0; i < files.length; i++) {
-                    String pathFile = storeFile(files[i], id);
-                    if (!StringUtils.isBlank(pathFile)) {
-                        file = file + pathFile + ",";
-
-                }
-            }
-            if (userProfile.getFileName() == null) {
-                userProfile.setFileName(file);
-            } else {
-                userProfile.setFileName(userProfile.getFileName() + file);
-            }
-            userProfileRepository.save(userProfile);
-        }else{
-            // throw all file with name are existed
-            throw new DuplicateRecordException(filesNameExisted);
-        }
-
-
+        return filesNameExisted;
     }
+
+    private void saveFile(MultipartFile[] files, UserProfile userProfile, String file) {
+        for (int i = 0; i < files.length; i++) {
+            String pathFile = storeFile(files[i], userProfile.getUserProfileId());
+            if (!StringUtils.isBlank(pathFile)) {
+                file = file + pathFile + ",";
+
+            }
+        }
+        if (userProfile.getFileName() == null) {
+            userProfile.setFileName(file);
+        } else {
+            userProfile.setFileName(userProfile.getFileName() + file);
+        }
+        userProfileRepository.save(userProfile);
+    }
+
 
     @Override
     public ResponseEntity<?> downloadUserFile(Long userId, String fileName, HttpServletResponse httpServletResponse) throws IOException {
@@ -167,7 +182,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                 .orElseThrow(() -> new ResourceNotFoundException("user name", "id", String.valueOf(userId)));
     }
 
-    private HttpHeaders getHeader(File file){
+    private HttpHeaders getHeader(File file) {
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
         header.add("Cache-Control", "no-cache, no-store, must-revalidate");
