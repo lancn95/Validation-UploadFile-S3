@@ -176,7 +176,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     private String storeFile(MultipartFile file, Long id) {
         if (file == null || file.isEmpty()) return "";
-        String path = "UserWithId" + id + "/";
+        String path = "/business/" + id + "/";
         return fileUploadService.store(file, path);
     }
 

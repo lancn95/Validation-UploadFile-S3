@@ -25,7 +25,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         System.out.println("*** " + savePath + " ***");
         File pathAsFile = new File(savePath);
         if(!Files.exists(Paths.get(savePath))){
-            pathAsFile.mkdir();
+            pathAsFile.mkdirs();
         }
 
         try {
