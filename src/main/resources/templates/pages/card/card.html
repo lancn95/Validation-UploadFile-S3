@@ -7,13 +7,31 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<!--    <script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>-->
+<!--    <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.2/sockjs.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
-    <h1>This is your card</h1>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <div class="container">
+        <h1>This is your card</h1>
+        <div class="card" style="width: 18rem;">
+            <img class="card-img-top" th:src="@{/images/voucher1000.jpg}" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title" id="card-title">Voucher 1000$</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <button type="button" class="btn btn-primary" id="add-to-card">Add To Card</button>
+            </div>
+        </div>
+
+    </div>
+
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+    <script th:src="@{/js/pages/jquery-3.2.1.slim.min.js}"></script>
+    <script th:src="@{/js/pages/popper.min.js}"></script>
+    <script th:src="@{/js/pages/bootstrap.min.js}"></script>
     <script th:src="@{/js/pages/card/card.js}"></script>
-    <script th:src="@{/js/common.js}"></script>
 
 </body>
 </html>

@@ -20,6 +20,8 @@
 		<postgresql-version>42.2.5</postgresql-version>
 		<spring-websocket-version>5.3.18</spring-websocket-version>
 		<hibernate-jpamodelgen-version>5.4.27.Final</hibernate-jpamodelgen-version>
+		<sockjs-client-version>1.0.2</sockjs-client-version>
+		<stomp-websocket-version>2.3.3</stomp-websocket-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -89,6 +91,27 @@
 			<artifactId>hibernate-jpamodelgen</artifactId>
 			<version>${hibernate-jpamodelgen-version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.webjars/sockjs-client -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>sockjs-client</artifactId>
+			<version>${sockjs-client-version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.webjars/stomp-websocket -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>stomp-websocket</artifactId>
+			<version>${stomp-websocket-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-messaging</artifactId>
+			<version>5.3.22</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>webjars-locator-core</artifactId>
 		</dependency>
 	</dependencies>
 
