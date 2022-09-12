@@ -19,6 +19,7 @@
 		<swagger-version>1.6.4</swagger-version>
 		<postgresql-version>42.2.5</postgresql-version>
 		<spring-websocket-version>5.3.18</spring-websocket-version>
+		<hibernate-jpamodelgen-version>5.4.27.Final</hibernate-jpamodelgen-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -82,6 +83,12 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+			<version>${hibernate-jpamodelgen-version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
