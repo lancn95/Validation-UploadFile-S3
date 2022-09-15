@@ -1,4 +1,4 @@
-package com.amigos.awsuploadimage.service.impl;
+package com.amigos.awsuploadimage.service;
 
 public interface NotificationService {
     void sendGlobalNotification(String message);

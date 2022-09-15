@@ -2,6 +2,7 @@
 let signInUrl = "/api/auth/authenticate";
 let forgotPasswordUrl = "/auth/forgot-password"
 let changePasswordUrl = "/auth/change-password"
+let delayTime = 5000
 
 $(document).ready(function () {
     console.log("Login page is ready");
@@ -10,15 +11,17 @@ $(document).ready(function () {
         let loginId = $("#login-id").val();
         let password = $("#password").val();
         let token = localStorage.getItem("token")
-        delayButton($loginSubmit, 5000);
+        delayButton($loginSubmit, delayTime);
         console.log(loginId + " - " + password + " - " + token)
-        ajaxPost(signInUrl, {loginId, password, token}, afterSubmit)
+        ajaxPost(signInUrl, {loginId, password, token}, afterSubmit, handleError)
     })
 });
 
-
+function handleError(error){
+    console.log(error)
+}
 function afterSubmit(data) {
-
+    console.log(data)
     if (data.status === "CHANGE_PASSWORD_REQUIRED") {
         window.location = changePasswordUrl;
         return
@@ -43,7 +46,11 @@ function afterSubmit(data) {
     }
 
     if (data.status === "AUTHENTICATED") {
-        window.location = "/admin"
+        console.log(data.jwt);
+        localStorage.setItem("Authorization","Bearer " + data.jwt);
+        window.location = "/"
+
+        // console.log("Ready to forward admin site")
     }
 }
 function disableButton(e) {

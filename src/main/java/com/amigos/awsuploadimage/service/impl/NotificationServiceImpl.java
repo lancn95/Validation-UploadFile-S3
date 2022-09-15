@@ -1,11 +1,12 @@
 package com.amigos.awsuploadimage.service.impl;
 
 import com.amigos.awsuploadimage.response.ResponseMessage;
+import com.amigos.awsuploadimage.service.NotificationService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NotificationServiceImpl implements NotificationService{
+public class NotificationServiceImpl implements NotificationService {
     private final SimpMessagingTemplate messagingTemplate;
 
     public NotificationServiceImpl(SimpMessagingTemplate messagingTemplate) {
